@@ -7,5 +7,49 @@
   "course_title": "اسم الكورس",
   "instructor": "المحاضر",
   "loading_courses": "جارٍ تحميل الكورسات...",
-  "failed_load_courses": "فشل تحميل الكورسات."
+  "failed_load_courses": "فشل تحميل الكورسات.",
+
+  "login_title": "تسجيل الدخول",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "login_button": "تسجيل الدخول",
+  "logging_in": "جارٍ تسجيل الدخول...",
+  "invalid_login": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+  "forgot_password": "نسيت كلمة المرور؟",
+  "no_account": "ليس لديك حساب؟",
+  "sign_up": "إنشاء حساب",
+
+  "verify_account": "تأكيد الحساب",
+  "otp_instruction": "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
+  "otp": "رمز التحقق",
+  "verify_button": "تأكيد الحساب",
+  "verifying": "جارٍ التحقق...",
+  "resend_otp": "إعادة إرسال الرمز",
+  "sending": "جارٍ الإرسال...",
+  "otp_sent": "تم إرسال رمز التحقق بنجاح.",
+  "verification_failed": "فشل التحقق",
+
+  "create_account": "إنشاء حساب",
+  "name": "الاسم",
+  "already_have_account": "لديك حساب بالفعل؟",
+  "login": "تسجيل الدخول",
+  "creating_account": "جارٍ إنشاء الحساب...",
+  "registration_failed": "فشل إنشاء الحساب",
+
+  "forgot_password_title": "نسيت كلمة المرور",
+  "checking": "جارٍ التحقق...",
+  "continue": "متابعة",
+  "something_went_wrong": "حدث خطأ ما",
+
+  "reset_password_title": "إعادة تعيين كلمة المرور",
+  "reset_password_for": "إعادة تعيين كلمة المرور لـ",
+  "new_password": "كلمة المرور الجديدة",
+  "confirm_password": "تأكيد كلمة المرور",
+  "resetting": "جارٍ إعادة التعيين...",
+  "reset_password_button": "إعادة تعيين كلمة المرور",
+  "reset_password_failed": "فشل إعادة تعيين كلمة المرور",
+
+  "logout": "تسجيل الخروج",
+  "logging_out": "جارٍ تسجيل الخروج...",
+  "logout_failed": "فشل تسجيل الخروج"
 }

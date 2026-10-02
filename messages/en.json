@@ -7,5 +7,49 @@
   "course_title": "Course Title",
   "instructor": "Instructor",
   "loading_courses": "Loading courses...",
-  "failed_load_courses": "Failed to load courses."
+  "failed_load_courses": "Failed to load courses.",
+
+  "login_title": "Login",
+  "email": "Email",
+  "password": "Password",
+  "login_button": "Login",
+  "logging_in": "Logging in...",
+  "invalid_login": "Invalid email or password",
+  "forgot_password": "Forgot password?",
+  "no_account": "Don't have an account?",
+  "sign_up": "Sign Up",
+
+  "verify_account": "Verify Account",
+  "otp_instruction": "Enter the OTP sent to your email",
+  "otp": "OTP",
+  "verify_button": "Verify Account",
+  "verifying": "Verifying...",
+  "resend_otp": "Resend OTP",
+  "sending": "Sending...",
+  "otp_sent": "OTP sent successfully.",
+  "verification_failed": "Verification failed",
+
+  "create_account": "Create Account",
+  "name": "Name",
+  "already_have_account": "Already have an account?",
+  "login": "Login",
+  "creating_account": "Creating account...",
+  "registration_failed": "Registration failed",
+
+  "forgot_password_title": "Forgot Password",
+  "checking": "Checking...",
+  "continue": "Continue",
+  "something_went_wrong": "Something went wrong",
+
+  "reset_password_title": "Reset Password",
+  "reset_password_for": "Reset password for",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password",
+  "resetting": "Resetting...",
+  "reset_password_button": "Reset Password",
+  "reset_password_failed": "Reset password failed",
+
+  "logout": "Logout",
+  "logging_out": "Logging out...",
+  "logout_failed": "Logout failed"
 }

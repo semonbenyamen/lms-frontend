@@ -1,9 +1,17 @@
 import { useState } from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { useServerFn } from '@tanstack/react-start'
 
 import { fetchCourses } from '@/api/courses'
 import { Button } from '@/components/ui/button'
+
+import { logoutServerFn } from '@/server/auth'
+import { authKeys } from '@/queries/auth'
+
 import * as m from '@/paraglide/messages'
 
 export const Route = createFileRoute('/courses/')({
@@ -12,6 +20,25 @@ export const Route = createFileRoute('/courses/')({
 
 function CoursesPage() {
   const [locale, setLocale] = useState<'en' | 'ar'>('en')
+
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  const logout = useServerFn(logoutServerFn)
+
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authKeys.currentUser(),
+      })
+
+      await navigate({
+        to: '/login',
+      })
+    },
+  })
 
   const {
     data: courses,
@@ -27,9 +54,7 @@ function CoursesPage() {
   if (isPending) {
     return (
       <div className="p-6">
-        <p>
-          {m.loading_courses({}, messageOptions)}
-        </p>
+        <p>{m.loading_courses({}, messageOptions)}</p>
       </div>
     )
   }
@@ -73,26 +98,38 @@ function CoursesPage() {
           </Button>
 
           <Button asChild>
-            <Link to="/courses/new">
-              {m.add_course({}, messageOptions)}
-            </Link>
+            <Link to="/courses/new">{m.add_course({}, messageOptions)}</Link>
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={() => {
+              logoutMutation.mutate()
+            }}
+            disabled={logoutMutation.isPending}
+          >
+            {logoutMutation.isPending
+              ? m.logging_out({}, messageOptions)
+              : m.logout({}, messageOptions)}
           </Button>
         </div>
       </div>
 
+      {logoutMutation.isError && (
+        <p className="mb-4 text-sm text-red-500">
+          {logoutMutation.error instanceof Error
+            ? logoutMutation.error.message
+            : m.logout_failed({}, messageOptions)}
+        </p>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2">
         {courses.map((course) => (
-          <div
-            key={course.id}
-            className="rounded-lg border p-5 shadow-sm"
-          >
-            <h2 className="text-xl font-semibold">
-              {course.title}
-            </h2>
+          <div key={course.id} className="rounded-lg border p-5 shadow-sm">
+            <h2 className="text-xl font-semibold">{course.title}</h2>
 
             <p className="mt-2 text-gray-600">
-              {m.instructor({}, messageOptions)}:{' '}
-              {course.instructor}
+              {m.instructor({}, messageOptions)}: {course.instructor}
             </p>
           </div>
         ))}
