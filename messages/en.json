@@ -1,0 +1,11 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "courses_title": "Courses",
+  "manage_courses": "Manage LMS courses",
+  "add_course": "Add Course",
+  "create_course": "Create Course",
+  "course_title": "Course Title",
+  "instructor": "Instructor",
+  "loading_courses": "Loading courses...",
+  "failed_load_courses": "Failed to load courses."
+}

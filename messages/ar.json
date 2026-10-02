@@ -1,0 +1,11 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "courses_title": "الكورسات",
+  "manage_courses": "إدارة كورسات نظام الـ LMS",
+  "add_course": "إضافة كورس",
+  "create_course": "إنشاء كورس",
+  "course_title": "اسم الكورس",
+  "instructor": "المحاضر",
+  "loading_courses": "جارٍ تحميل الكورسات...",
+  "failed_load_courses": "فشل تحميل الكورسات."
+}
