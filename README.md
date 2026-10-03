@@ -1,226 +1,438 @@
-Welcome to your new TanStack Start app!
+# LMS Frontend
 
-# Getting Started
+Frontend application for the 5DVR Learning Management System (LMS).
 
-To run this application:
+The project is built with TanStack Start, React, TypeScript, TanStack Router, TanStack Query, TanStack Form, Tailwind CSS, shadcn/ui, Valibot, ParaglideJS, Playwright, Vite, and Nitro.
+
+The current implementation includes course pages and a complete frontend authentication flow with automated E2E testing.
+
+---
+
+## Tech Stack
+
+- React
+- TypeScript
+- TanStack Start
+- TanStack Router
+- TanStack Query
+- TanStack Form
+- Tailwind CSS
+- shadcn/ui
+- Valibot
+- ParaglideJS
+- Playwright
+- Vite
+- Nitro
+
+---
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-# Building For Production
+The application will normally be available at:
 
-To build this application for production:
+```text
+http://localhost:3000
+```
+
+---
+
+## Production Build
+
+Build the application for production:
 
 ```bash
 npm run build
 ```
 
-## Styling
+The production output is generated in:
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+```text
+.output/
+```
 
-### Removing Tailwind CSS
+You can preview the build with:
 
-If you prefer not to use Tailwind CSS:
+```bash
+npx vite preview
+```
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
+---
 
-## Linting & Formatting
+## Available Scripts
 
+Start the development server:
 
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
+```bash
+npm run dev
+```
+
+Run ESLint:
 
 ```bash
 npm run lint
-npm run format
-npm run check
 ```
 
-
-## Deploy with Nitro
-
-This project uses Nitro as a generic server adapter, so it can run on any Node-compatible host.
+Build the project:
 
 ```bash
 npm run build
-node dist/server/index.mjs
 ```
 
-The build output is a self-contained Node server. To deploy, push the `dist/` directory to your host (Render, Fly.io, your own VPS, etc.) and run the server command above.
-
-For host-specific presets (Vercel, Netlify, Cloudflare, AWS Lambda, etc.) and tuning, see https://v3.nitro.build/deploy.
-
-
-# Paraglide i18n
-
-This add-on wires up ParaglideJS for localized routing and message formatting.
-
-- Messages live in `project.inlang/messages`.
-- URLs are localized through the Paraglide Vite plugin and router `rewrite` hooks.
-- Run the dev server or build to regenerate the `src/paraglide` outputs.
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+Run the Playwright E2E tests:
 
 ```bash
-pnpm dlx shadcn@latest add button
+npm run test:e2e
 ```
 
+Format the project:
 
+```bash
+npm run format
+```
+
+Run the configured project checks:
+
+```bash
+npm run check
+```
+
+---
+
+## Authentication
+
+The current frontend authentication flow includes:
+
+- Login
+- Registration
+- Email verification
+- OTP verification
+- Resend OTP
+- Forgot password
+- Reset password
+- Logout
+- Authentication state handling
+- Protected routes
+- Redirecting unauthorized users
+- Redirecting authenticated users away from the login page
+- Form validation
+- Loading states
+- Error states
+
+Authentication logic currently uses a mock server-side service for development and testing.
+
+Real backend API and JWT/session integration will be connected later.
+
+---
+
+## Authentication Architecture
+
+The authentication implementation follows this flow:
+
+```text
+UI / Route
+    ↓
+TanStack Form
+    ↓
+Valibot Validation
+    ↓
+useServerFn
+    ↓
+createServerFn
+    ↓
+Auth Service
+```
+
+Main authentication files:
+
+```text
+src/schema/auth.ts
+src/api/services/auth.service.ts
+src/server/auth.ts
+src/queries/auth.ts
+```
+
+Authentication routes:
+
+```text
+/login
+/register
+/verify-otp
+/forgot-password
+/reset-password
+```
+
+---
+
+## Protected Routes
+
+The `/courses` route is protected.
+
+If an unauthenticated user tries to access:
+
+```text
+/courses
+```
+
+they are redirected to:
+
+```text
+/login
+```
+
+After a successful login, the user is allowed to access the courses area.
+
+After logout, access to protected routes is blocked again.
+
+---
+
+## Courses
+
+The project currently includes:
+
+```text
+/courses
+/courses/new
+```
+
+The courses section currently uses mock course data.
+
+---
+
+## Validation
+
+Valibot is used for authentication form validation.
+
+Current validation includes:
+
+- Valid email addresses
+- Minimum password length
+- Password confirmation
+- OTP length
+- Registration validation
+- Password reset validation
+
+Validation schemas are located in:
+
+```text
+src/schema/auth.ts
+```
+
+---
+
+## E2E Testing
+
+Playwright is used for end-to-end testing.
+
+Run all E2E tests with:
+
+```bash
+npm run test:e2e
+```
+
+The authentication test suite currently covers 16 scenarios:
+
+1. Unauthorized access to protected routes
+2. Invalid login
+3. Registration password validation
+4. User registration
+5. Invalid OTP
+6. Resend OTP
+7. Account verification
+8. Login after verification
+9. Logout
+10. Protected route after logout
+11. Forgot password flow
+12. Reset password validation
+13. Password reset
+14. Login with the new password
+15. Authenticated user redirect from login
+16. Final logout flow
+
+Current result:
+
+```text
+16 passed
+```
+
+The E2E tests are located in:
+
+```text
+tests/auth.spec.ts
+```
+
+Playwright configuration:
+
+```text
+playwright.config.ts
+```
+
+The authentication tests run serially because the current mock authentication service uses shared in-memory state.
+
+---
+
+## Internationalization
+
+The project uses ParaglideJS for internationalization.
+
+Supported languages currently include:
+
+- English
+- Arabic
+
+Translation messages are stored in:
+
+```text
+messages/en.json
+messages/ar.json
+```
+
+Generated Paraglide files are located in:
+
+```text
+src/paraglide/
+```
+
+Generated Paraglide files should not be edited manually.
+
+---
+
+## Styling
+
+The project uses:
+
+- Tailwind CSS
+- shadcn/ui
+
+Reusable UI components are located in:
+
+```text
+src/components/ui/
+```
+
+Generated shadcn components should generally not be edited unless customization is intentionally required.
+
+---
 
 ## Routing
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+The project uses TanStack Router with file-based routing.
 
-### Adding A Route
+Routes are located in:
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
+```text
+src/routes/
 ```
 
-Then anywhere in your JSX you can use it like so:
+The route tree is generated automatically.
 
-```tsx
-<Link to="/about">About</Link>
+Do not manually edit:
+
+```text
+src/routeTree.gen.ts
 ```
 
-This will create a link that will navigate to the `/about` route.
+---
 
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+## Query Management
 
-### Using A Layout
+TanStack Query is used for server state and authentication state.
 
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
+Authentication query configuration is located in:
 
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
+```text
+src/queries/auth.ts
 ```
 
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+---
 
 ## Server Functions
 
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
+TanStack Start server functions are used between the frontend routes and the current authentication service.
 
-```tsx
-import { createServerFn } from '@tanstack/react-start'
+Authentication server functions are located in:
 
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
+```text
+src/server/auth.ts
 ```
 
-## API Routes
+---
 
-You can create API routes by using the `server` property in your route definitions:
+## Quality Checks
 
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
+Before committing changes, run:
 
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
+```bash
+npm run lint
+npm run build
+npm run test:e2e
 ```
 
-## Data Fetching
+Current Week 2 status:
 
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
+```text
+Lint        Passed
+Build       Passed
+E2E Tests   16 Passed
 ```
 
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+---
 
+## Generated Files
 
+Do not manually edit generated files such as:
 
-# Learn More
+```text
+src/routeTree.gen.ts
+src/paraglide/
+```
 
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+Test output directories are ignored by Git:
 
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+```text
+test-results/
+playwright-report/
+blob-report/
+```
+
+---
+
+## Current Development Status
+
+Completed:
+
+- Project setup
+- Course routes
+- Create course page
+- Authentication UI
+- Registration flow
+- OTP verification
+- OTP resend
+- Forgot password
+- Reset password
+- Logout
+- Route protection
+- Form validation
+- English and Arabic translations
+- Authentication state handling
+- E2E authentication testing
+- Lint checks
+- Production build
+
+Still to be integrated:
+
+- Real backend API
+- Real JWT/session handling
+- Persistent authentication
+- Production authentication storage

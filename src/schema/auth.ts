@@ -1,5 +1,4 @@
 import * as v from 'valibot'
-import { email, input } from 'zod'
 
 export const loginSchema = v.object({
   email: v.pipe(v.string(), v.email('Please enter a valid email address')),

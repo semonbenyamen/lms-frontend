@@ -27,18 +27,19 @@ function CoursesPage() {
   const logout = useServerFn(logoutServerFn)
 
   const logoutMutation = useMutation({
-    mutationFn: logout,
+  mutationFn: logout,
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: authKeys.currentUser(),
-      })
+  onSuccess: async () => {
+    queryClient.setQueryData(
+      authKeys.currentUser(),
+      null,
+    )
 
-      await navigate({
-        to: '/login',
-      })
-    },
-  })
+    await navigate({
+      to: '/login',
+    })
+  },
+})
 
   const {
     data: courses,

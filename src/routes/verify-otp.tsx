@@ -1,9 +1,18 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+
+import {
+  createFileRoute,
+  useNavigate,
+} from '@tanstack/react-router'
+
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import { useServerFn } from '@tanstack/react-start'
 
-import { verifyOtpServerFn, resendOtpServerFn } from '@/server/auth'
+import {
+  resendOtpServerFn,
+  verifyOtpServerFn,
+} from '@/server/auth'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,16 +22,25 @@ import * as m from '@/paraglide/messages'
 
 export const Route = createFileRoute('/verify-otp')({
   validateSearch: (search: Record<string, unknown>) => ({
-    email: typeof search.email === 'string' ? search.email : '',
+    email:
+      typeof search.email === 'string'
+        ? search.email
+        : '',
   }),
 
   component: VerifyOtpPage,
 })
 
 function VerifyOtpPage() {
+  const [isHydrated, setIsHydrated] = useState(false)
+
   const navigate = useNavigate()
 
   const { email } = Route.useSearch()
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   const verifyOtp = useServerFn(verifyOtpServerFn)
   const resendOtp = useServerFn(resendOtpServerFn)
@@ -60,11 +78,17 @@ function VerifyOtpPage() {
     <div className="mx-auto flex min-h-screen max-w-md items-center p-6">
       <div className="w-full space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">{m.verify_account()}</h1>
+          <h1 className="text-3xl font-bold">
+            {m.verify_account()}
+          </h1>
 
-          <p className="mt-2 text-sm">{m.otp_instruction()}</p>
+          <p className="mt-2 text-sm">
+            {m.otp_instruction()}
+          </p>
 
-          <p className="mt-1 text-sm font-medium">{email}</p>
+          <p className="mt-1 text-sm font-medium">
+            {email}
+          </p>
         </div>
 
         <form
@@ -72,19 +96,25 @@ function VerifyOtpPage() {
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
+
             form.handleSubmit()
           }}
         >
           <form.Field name="otp">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>{m.otp()}</Label>
+                <Label htmlFor={field.name}>
+                  {m.otp()}
+                </Label>
 
                 <Input
                   id={field.name}
+                  name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
+                  onChange={(event) =>
+                    field.handleChange(event.target.value)
+                  }
                   placeholder="123456"
                 />
               </div>
@@ -92,7 +122,10 @@ function VerifyOtpPage() {
           </form.Field>
 
           {verifyMutation.isError && (
-            <p className="text-sm text-red-500">
+            <p
+              className="text-sm text-red-500"
+              role="alert"
+            >
               {verifyMutation.error instanceof Error
                 ? verifyMutation.error.message
                 : m.verification_failed()}
@@ -102,16 +135,25 @@ function VerifyOtpPage() {
           <Button
             type="submit"
             className="w-full"
-            disabled={verifyMutation.isPending}
+            disabled={
+              !isHydrated ||
+              verifyMutation.isPending
+            }
           >
-            {verifyMutation.isPending ? m.verifying() : m.verify_button()}
+            {verifyMutation.isPending
+              ? m.verifying()
+              : m.verify_button()}
           </Button>
 
           <Button
             type="button"
             variant="outline"
             className="w-full"
-            disabled={resendMutation.isPending || !email}
+            disabled={
+              !isHydrated ||
+              resendMutation.isPending ||
+              !email
+            }
             onClick={() => {
               resendMutation.mutate({
                 data: {
@@ -120,11 +162,15 @@ function VerifyOtpPage() {
               })
             }}
           >
-            {resendMutation.isPending ? m.sending() : m.resend_otp()}
+            {resendMutation.isPending
+              ? m.sending()
+              : m.resend_otp()}
           </Button>
 
           {resendMutation.isSuccess && (
-            <p className="text-sm">{m.otp_sent()}</p>
+            <p className="text-sm">
+              {m.otp_sent()}
+            </p>
           )}
         </form>
       </div>

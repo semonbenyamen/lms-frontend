@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import {
   createFileRoute,
   Link,
@@ -6,12 +8,18 @@ import {
 } from '@tanstack/react-router'
 
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { useServerFn } from '@tanstack/react-start'
 
 import { loginSchema } from '@/schema/auth'
 import { loginServerFn } from '@/server/auth'
-import { authKeys, currentUserQueryOptions } from '@/queries/auth'
+import {
+  authKeys,
+  currentUserQueryOptions,
+} from '@/queries/auth'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,23 +44,20 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginPage() {
+  const [loginError, setLoginError] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
+
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   const login = useServerFn(loginServerFn)
 
   const loginMutation = useMutation({
     mutationFn: login,
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: authKeys.currentUser(),
-      })
-
-      await navigate({
-        to: '/courses',
-      })
-    },
   })
 
   const form = useForm({
@@ -66,9 +71,24 @@ function LoginPage() {
     },
 
     onSubmit: async ({ value }) => {
-      loginMutation.mutate({
-        data: value,
-      })
+      setLoginError(false)
+
+      try {
+        const user = await loginMutation.mutateAsync({
+          data: value,
+        })
+
+        queryClient.setQueryData(
+          authKeys.currentUser(),
+          user,
+        )
+
+        await navigate({
+          to: '/courses',
+        })
+      } catch {
+        setLoginError(true)
+      }
     },
   })
 
@@ -76,7 +96,9 @@ function LoginPage() {
     <div className="mx-auto flex min-h-screen max-w-md items-center p-6">
       <div className="w-full space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">{m.login_title()}</h1>
+          <h1 className="text-3xl font-bold">
+            {m.login_title()}
+          </h1>
         </div>
 
         <form
@@ -91,7 +113,9 @@ function LoginPage() {
           <form.Field name="email">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>{m.email()}</Label>
+                <Label htmlFor={field.name}>
+                  {m.email()}
+                </Label>
 
                 <Input
                   id={field.name}
@@ -99,7 +123,9 @@ function LoginPage() {
                   type="email"
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
+                  onChange={(event) =>
+                    field.handleChange(event.target.value)
+                  }
                 />
 
                 {!field.state.meta.isValid && (
@@ -116,7 +142,9 @@ function LoginPage() {
           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor={field.name}>{m.password()}</Label>
+                <Label htmlFor={field.name}>
+                  {m.password()}
+                </Label>
 
                 <Input
                   id={field.name}
@@ -124,7 +152,9 @@ function LoginPage() {
                   type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
+                  onChange={(event) =>
+                    field.handleChange(event.target.value)
+                  }
                 />
 
                 {!field.state.meta.isValid && (
@@ -138,36 +168,54 @@ function LoginPage() {
             )}
           </form.Field>
 
-          {loginMutation.isError && (
-            <p className="text-sm text-red-500">
-              {loginMutation.error instanceof Error
-                ? loginMutation.error.message
-                : m.invalid_login()}
+          {loginError && (
+            <p
+              className="text-sm text-red-500"
+              role="alert"
+            >
+              {m.invalid_login()}
             </p>
           )}
 
           <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            selector={(state) => [
+              state.canSubmit,
+              state.isSubmitting,
+            ]}
           >
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
                 className="w-full"
-                disabled={!canSubmit || isSubmitting || loginMutation.isPending}
+                disabled={
+                  !isHydrated ||
+                  !canSubmit ||
+                  isSubmitting ||
+                  loginMutation.isPending
+                }
               >
-                {loginMutation.isPending ? m.logging_in() : m.login_button()}
+                {loginMutation.isPending
+                  ? m.logging_in()
+                  : m.login_button()}
               </Button>
             )}
           </form.Subscribe>
 
           <div className="flex justify-between text-sm">
-            <Link to="/forgot-password" className="underline">
+            <Link
+              to="/forgot-password"
+              className="underline"
+            >
               {m.forgot_password()}
             </Link>
 
             <span>
               {m.no_account()}{' '}
-              <Link to="/register" className="underline">
+
+              <Link
+                to="/register"
+                className="underline"
+              >
                 {m.sign_up()}
               </Link>
             </span>
